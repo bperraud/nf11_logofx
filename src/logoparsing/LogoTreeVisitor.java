@@ -218,6 +218,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     @Override
     public Integer visitGetvar(GetvarContext ctx) {
         String varName = ctx.GETVAR().getText().substring(1);
+        if (!varMap.containsKey(varName))
+            throw new NullPointerException("Variable '" + varName + "' is not set!");
         setAttValue(ctx, varMap.get(varName));
         Log.appendnl("visitGetvar");
         return 0;
@@ -284,11 +286,18 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     public Integer visitTantque(TantqueContext ctx) {
         visit(ctx.booleanexpression());
         double testResult = getAttValue(ctx.booleanexpression());
-        if (testResult != 0.0) {
+
+        while (testResult != 0.0) {
             visit(ctx.bloc());
+
+            visit(ctx.booleanexpression());
+            testResult = getAttValue(ctx.booleanexpression());
+            
+            Log.appendnl("visitTantque");
         }
+
         // TODO: implémenter le throw exception pour le cas où il y aurait un break
-        Log.appendnl("visitTantque");
+
         return 0;
     }
 
