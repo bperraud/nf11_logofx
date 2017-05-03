@@ -18,19 +18,19 @@ liste_instructions :
 ;
 
 instruction :
-    'av'       exp                      #av
-  | 'td'       exp                      #td
-  | 'tg'       exp                      #tg
-  | 'lc'                                #lc
-  | 'bc'                                #bc
-  | 've'                                #ve
-  | 're'       exp                      #re
-  | 'fpos' '[' exp exp ']'              #fpos
-  | 'fcc'      exp exp exp              #fcc
-  | 'repete'   INT bloc                 #repete
-  | 'donne'    SETVAR exp               #donne
-  | 'si' booleanexpression bloc bloc?   #si
-  | 'tantque' booleanexpression bloc    #tantque
+    'av'        exp                             #av
+  | 'td'        exp                             #td
+  | 'tg'        exp                             #tg
+  | 'lc'                                        #lc
+  | 'bc'                                        #bc
+  | 've'                                        #ve
+  | 're'        exp                             #re
+  | 'fpos' '['  exp exp ']'                     #fpos
+  | 'fcc'       exp exp exp                     #fcc
+  | 'repete'    INT bloc                        #repete
+  | 'donne'     SETVAR exp                      #donne
+  | 'si'        booleanexpression bloc bloc?    #si
+  | 'tantque'   booleanexpression bloc          #tantque
 ;
 
 bloc : '[' liste_instructions ']'
