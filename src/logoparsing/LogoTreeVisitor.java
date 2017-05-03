@@ -7,15 +7,19 @@ import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import logogui.Log;
 import logogui.Traceur;
-import logoparsing.LogoParser.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static logoparsing.LogoParser.*;
 
 public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     private Traceur traceur;
     private ParseTreeProperty<Double> atts = new ParseTreeProperty<>();
     private Stack<Integer> loopsStack = new Stack<>();
+    private Map<String, Double> varMap = new HashMap<>();
 
     private int toInt(double a) {
         return (int) Math.round(a);
@@ -37,6 +41,10 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     private double getAttValue(ParseTree node) {
         return atts.get(node);
     }
+
+    /* TODO : vérifier les Var dans les autres expressions de la grammaire notamment, dans le repete avec un entier forcé.
+    */
+
 
     @Override
     public Integer visitMul(MulContext ctx) {
@@ -89,7 +97,6 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     @Override
     public Integer visitInt(IntContext ctx) {
-        visitChildren(ctx);
         String intText = ctx.INT().getText();
         setAttValue(ctx, Integer.valueOf(intText));
         Log.appendnl("visitInt");
@@ -128,11 +135,12 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         visitChildren(ctx);
         traceur.avance(getAttValue(ctx.exp()));
         Log.appendnl("visitAv");
+        Log.appendnl(String.valueOf(getAttValue(ctx.exp())));
         return 0;
     }
 
     @Override
-    public Integer visitRe(LogoParser.ReContext ctx) {
+    public Integer visitRe(ReContext ctx) {
         visitChildren(ctx);
         traceur.recule(getAttValue(ctx.exp()));
         Log.appendnl("visitRe");
@@ -148,7 +156,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     }
 
     @Override
-    public Integer visitTg(LogoParser.TgContext ctx) {
+    public Integer visitTg(TgContext ctx) {
         visitChildren(ctx);
         traceur.tg(getAttValue(ctx.exp()));
         Log.appendnl("visitTg");
@@ -156,28 +164,28 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     }
 
     @Override
-    public Integer visitLc(LogoParser.LcContext ctx) {
+    public Integer visitLc(LcContext ctx) {
         traceur.lc();
         Log.appendnl("visitLc");
         return 0;
     }
 
     @Override
-    public Integer visitBc(LogoParser.BcContext ctx) {
+    public Integer visitBc(BcContext ctx) {
         traceur.bc();
         Log.appendnl("visitBc");
         return 0;
     }
 
     @Override
-    public Integer visitVe(LogoParser.VeContext ctx) {
+    public Integer visitVe(VeContext ctx) {
         traceur.ve();
         Log.appendnl("visitVe");
         return 0;
     }
 
     @Override
-    public Integer visitFpos(LogoParser.FposContext ctx) {
+    public Integer visitFpos(FposContext ctx) {
         visitChildren(ctx);
         traceur.fpos(getAttValue(ctx.exp(0)), getAttValue(ctx.exp(1)));
         Log.appendnl("visitFpos");
@@ -185,7 +193,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     }
 
     @Override
-    public Integer visitFcc(LogoParser.FccContext ctx) {
+    public Integer visitFcc(FccContext ctx) {
         visitChildren(ctx);
         int r = toInt(getAttValue(ctx.exp(0)));
         int g = toInt(getAttValue(ctx.exp(1)));
@@ -196,4 +204,93 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         Log.appendnl("visitFcc");
         return 0;
     }
+
+    @Override
+    public Integer visitDonne(DonneContext ctx) {
+        visitChildren(ctx);
+        String varName = ctx.SETVAR().getText().substring(1);
+        double value = toInt(getAttValue(ctx.exp()));
+        varMap.put(varName, value);
+        Log.appendnl("visitDonne");
+        return 0;
+    }
+
+    @Override
+    public Integer visitGetvar(GetvarContext ctx) {
+        String varName = ctx.GETVAR().getText().substring(1);
+        setAttValue(ctx, varMap.get(varName));
+        Log.appendnl("visitGetvar");
+        return 0;
+    }
+
+    @Override
+    public Integer visitBooleancomposite(BooleancompositeContext ctx) {
+        visitChildren(ctx);
+        String operator = ctx.OPERATOR().getText();
+        double operand1 = getAttValue(ctx.exp(0));
+        double operand2 = getAttValue(ctx.exp(1));
+        switch (operator) {
+            case "==":
+                setAttValue(ctx, operand1 == operand2 ? 1 : 0);
+                break;
+            case ">":
+                setAttValue(ctx, operand1 > operand2 ? 1 : 0);
+                break;
+            case ">=":
+                setAttValue(ctx, operand1 >= operand2 ? 1 : 0);
+                break;
+            case "<":
+                setAttValue(ctx, operand1 < operand2 ? 1 : 0);
+                break;
+            case "<=":
+                setAttValue(ctx, operand1 <= operand2 ? 1 : 0);
+                break;
+            case "!=":
+                setAttValue(ctx, operand1 != operand2 ? 1 : 0);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown operator");
+        }
+        Log.appendnl("visitBooleanexpression");
+        return 0;
+    }
+
+    @Override
+    public Integer visitBooleanatom(BooleanatomContext ctx) {
+        double value = getAttValue(ctx.exp());
+        if (value == 0.0) {
+            setAttValue(ctx, 0);
+        } else {
+            setAttValue(ctx, 1);
+        }
+        Log.appendnl("visitBooleanatom");
+        return 0;
+    }
+
+    @Override
+    public Integer visitSi(SiContext ctx) {
+        visit(ctx.booleanexpression());
+        double testResult = getAttValue(ctx.booleanexpression());
+        if (testResult != 0.0) {
+            visit(ctx.bloc(0));
+        } else if (ctx.bloc().size() == 2) {
+            visit(ctx.bloc(1));
+        }
+        Log.appendnl("visitSi");
+        return 0;
+    }
+
+    @Override
+    public Integer visitTantque(TantqueContext ctx) {
+        visit(ctx.booleanexpression());
+        double testResult = getAttValue(ctx.booleanexpression());
+        if (testResult != 0.0) {
+            visit(ctx.bloc());
+        }
+        // TODO: implémenter le throw exception pour le cas où il y aurait un break
+        Log.appendnl("visitTantque");
+        return 0;
+    }
+
+
 }

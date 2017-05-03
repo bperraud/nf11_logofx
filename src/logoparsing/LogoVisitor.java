@@ -1,4 +1,4 @@
-// Generated from C:/Users/Baptiste/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
+// Generated from C:/Users/bapti/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
 
   package logoparsing;
 
@@ -95,6 +95,27 @@ public interface LogoVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRepete(LogoParser.RepeteContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code donne}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDonne(LogoParser.DonneContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code si}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSi(LogoParser.SiContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code tantque}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTantque(LogoParser.TantqueContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LogoParser#bloc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -122,6 +143,13 @@ public interface LogoVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLoop(LogoParser.LoopContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code getvar}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGetvar(LogoParser.GetvarContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code parenthese}
 	 * labeled alternative in {@link LogoParser#exp}.
 	 * @param ctx the parse tree
@@ -142,4 +170,18 @@ public interface LogoVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitInt(LogoParser.IntContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code booleancomposite}
+	 * labeled alternative in {@link LogoParser#booleanexpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleancomposite(LogoParser.BooleancompositeContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code booleanatom}
+	 * labeled alternative in {@link LogoParser#booleanexpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanatom(LogoParser.BooleanatomContext ctx);
 }

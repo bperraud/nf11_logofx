@@ -1,4 +1,4 @@
-// Generated from C:/Users/Baptiste/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
+// Generated from C:/Users/bapti/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
 
   package logoparsing;
 
@@ -150,6 +150,42 @@ public interface LogoListener extends ParseTreeListener {
 	 */
 	void exitRepete(LogoParser.RepeteContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code donne}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void enterDonne(LogoParser.DonneContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code donne}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void exitDonne(LogoParser.DonneContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code si}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void enterSi(LogoParser.SiContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code si}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void exitSi(LogoParser.SiContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code tantque}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void enterTantque(LogoParser.TantqueContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code tantque}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void exitTantque(LogoParser.TantqueContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LogoParser#bloc}.
 	 * @param ctx the parse tree
 	 */
@@ -196,6 +232,18 @@ public interface LogoListener extends ParseTreeListener {
 	 */
 	void exitLoop(LogoParser.LoopContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code getvar}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterGetvar(LogoParser.GetvarContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code getvar}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitGetvar(LogoParser.GetvarContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code parenthese}
 	 * labeled alternative in {@link LogoParser#exp}.
 	 * @param ctx the parse tree
@@ -231,4 +279,28 @@ public interface LogoListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInt(LogoParser.IntContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code booleancomposite}
+	 * labeled alternative in {@link LogoParser#booleanexpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleancomposite(LogoParser.BooleancompositeContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code booleancomposite}
+	 * labeled alternative in {@link LogoParser#booleanexpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleancomposite(LogoParser.BooleancompositeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code booleanatom}
+	 * labeled alternative in {@link LogoParser#booleanexpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanatom(LogoParser.BooleanatomContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code booleanatom}
+	 * labeled alternative in {@link LogoParser#booleanexpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanatom(LogoParser.BooleanatomContext ctx);
 }
