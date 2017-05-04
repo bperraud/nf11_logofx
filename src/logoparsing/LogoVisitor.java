@@ -116,6 +116,13 @@ public interface LogoVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTantque(LogoParser.TantqueContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code break}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBreak(LogoParser.BreakContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LogoParser#bloc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

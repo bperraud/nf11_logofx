@@ -9,6 +9,7 @@ import logogui.Log;
 import logogui.Traceur;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,6 +17,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import static logoparsing.LogoParser.*;
 
 public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
+
+    private static int LOOP_MUST_BREAK = -1;
+
     private Traceur traceur;
     private ParseTreeProperty<Double> atts = new ParseTreeProperty<>();
     private Stack<Integer> loopsStack = new Stack<>();
@@ -273,12 +277,15 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     public Integer visitSi(SiContext ctx) {
         visit(ctx.booleanexpression());
         double testResult = getAttValue(ctx.booleanexpression());
-        if (testResult != 0.0) {
-            visit(ctx.bloc(0));
-        } else if (ctx.bloc().size() == 2) {
-            visit(ctx.bloc(1));
-        }
+
         Log.appendnl("visitSi");
+
+        if (testResult != 0.0) {
+            return visit(ctx.bloc(0));
+        } else if (ctx.bloc().size() == 2) {
+            return visit(ctx.bloc(1));
+        }
+
         return 0;
     }
 
@@ -286,14 +293,27 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     public Integer visitTantque(TantqueContext ctx) {
         visit(ctx.booleanexpression());
         double testResult = getAttValue(ctx.booleanexpression());
+        Integer exceptionCode;
+
+        int test=0;
 
         while (testResult != 0.0) {
-            visit(ctx.bloc());
+            exceptionCode = visit(ctx.bloc());
+
+            System.out.println(exceptionCode);
+
+            if (exceptionCode != null && exceptionCode == LOOP_MUST_BREAK) {
+                Log.appendnl("BREAK!!!");
+                return 0;
+            }
 
             visit(ctx.booleanexpression());
             testResult = getAttValue(ctx.booleanexpression());
-            
+
             Log.appendnl("visitTantque");
+            test++;
+            if (test > 10)
+                break;
         }
 
         // TODO: implémenter le throw exception pour le cas où il y aurait un break
@@ -301,5 +321,9 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         return 0;
     }
 
-
+    @Override
+    public Integer visitBreak(BreakContext ctx) {
+        Log.appendnl("visitBreak");
+        return LOOP_MUST_BREAK;
+    }
 }

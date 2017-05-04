@@ -186,6 +186,18 @@ public interface LogoListener extends ParseTreeListener {
 	 */
 	void exitTantque(LogoParser.TantqueContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code break}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void enterBreak(LogoParser.BreakContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code break}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void exitBreak(LogoParser.BreakContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LogoParser#bloc}.
 	 * @param ctx the parse tree
 	 */

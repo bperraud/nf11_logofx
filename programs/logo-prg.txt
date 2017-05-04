@@ -1,4 +1,9 @@
-av 100
-td 90 
-av 100
-td 90
+donne "a 1
+tantque :a > 0 [
+	av 50
+	tg 20
+	donne "a :a + 1
+	si :a > 5 [
+		BREAK
+	]
+]

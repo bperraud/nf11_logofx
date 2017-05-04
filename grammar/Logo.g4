@@ -31,6 +31,7 @@ instruction :
   | 'donne'     SETVAR exp                      #donne
   | 'si'        booleanexpression bloc bloc?    #si
   | 'tantque'   booleanexpression bloc          #tantque
+  | 'BREAK'                                     #break
 ;
 
 bloc : '[' liste_instructions ']'
