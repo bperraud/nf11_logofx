@@ -1,4 +1,4 @@
-// Generated from C:/Users/bapti/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
+// Generated from /home/baptiste/IdeaProjects/nf11_logofx/grammar/Logo.g4 by ANTLR 4.6
 
   package logoparsing;
 
@@ -32,7 +32,7 @@ public class LogoParser extends Parser {
 
 	private static final String[] _LITERAL_NAMES = {
 		null, "'av'", "'td'", "'tg'", "'lc'", "'bc'", "'ve'", "'re'", "'fpos'", 
-		"'['", "']'", "'fcc'", "'repete'", "'donne'", "'si'", "'tantque'", "'BREAK'", 
+		"'['", "']'", "'fcc'", "'repete'", "'donne'", "'si'", "'tantque'", "'STOP'", 
 		"'hasard'", "'*'", "'/'", "'+'", "'-'", "'LOOP'", "'('", "')'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {

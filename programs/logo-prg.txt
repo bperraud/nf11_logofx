@@ -4,6 +4,6 @@ tantque :a > 0 [
 	tg 20
 	donne "a :a + 1
 	si :a > 5 [
-		BREAK
+		STOP
 	]
 ]

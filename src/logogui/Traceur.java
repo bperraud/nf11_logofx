@@ -2,9 +2,7 @@ package logogui;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
 import javafx.scene.shape.Line;
-import logoparsing.LogoTreeVisitor;
 
 public class Traceur {
     private Group g;
