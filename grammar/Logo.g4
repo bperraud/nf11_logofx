@@ -27,7 +27,7 @@ instruction :
   | 're'        exp                             #re
   | 'fpos' '['  exp exp ']'                     #fpos
   | 'fcc'       exp exp exp                     #fcc
-  | 'repete'    INT bloc                        #repete
+  | 'repete'    exp bloc                        #repete
   | 'donne'     SETVAR exp                      #donne
   | 'si'        booleanexpression bloc bloc?    #si
   | 'tantque'   booleanexpression bloc          #tantque

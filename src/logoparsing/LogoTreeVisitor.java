@@ -243,8 +243,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     public Integer visitFpos(FposContext ctx) {
         Integer code;
 
-        for (ExpContext expContext : ctx.exp()) {
-            code = visit(expContext);
+        for (ParseTree child : ctx.children) {
+            code = visit(child);
 
             if (code != null && code < 0)
                 return code;
@@ -259,8 +259,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     public Integer visitFcc(FccContext ctx) {
         Integer code;
 
-        for (ExpContext expContext : ctx.exp()) {
-            code = visit(expContext);
+        for (ParseTree child : ctx.children) {
+            code = visit(child);
 
             if (code != null && code < 0)
                 return code;
@@ -437,11 +437,14 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     @Override
     public Integer visitBloc(BlocContext ctx) {
-        visit(ctx.getChild(0));
         Integer code;
-        if ((code = visit(ctx.liste_instructions())) != null && code < 0)
-            return code;
-        visit(ctx.getChild(1));
+        for (ParseTree child : ctx.children) {
+            code = visit(child);
+
+            if (code != null && code < 0)
+                return code;
+        }
+
         return 0;
     }
 }
