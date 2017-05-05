@@ -38,7 +38,7 @@ bloc : '[' liste_instructions ']'
 ;
 
 exp :
-    'hasard' INT        #random
+    'hasard' exp        #random
   | exp ('*' | '/') exp #mul
   | exp ('+' | '-') exp #sum
   | INT                 #int

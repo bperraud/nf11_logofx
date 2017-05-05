@@ -721,7 +721,9 @@ public class LogoParser extends Parser {
 		}
 	}
 	public static class RandomContext extends ExpContext {
-		public TerminalNode INT() { return getToken(LogoParser.INT, 0); }
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
 		public RandomContext(ExpContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -879,7 +881,7 @@ public class LogoParser extends Parser {
 				setState(66);
 				match(T__16);
 				setState(67);
-				match(INT);
+				exp(7);
 				}
 				break;
 			case INT:
@@ -1129,7 +1131,7 @@ public class LogoParser extends Parser {
 		"=\27\3\2\2\2=\31\3\2\2\2=\33\3\2\2\2=\34\3\2\2\2=\35\3\2\2\2=\36\3\2\2"+
 		"\2= \3\2\2\2=&\3\2\2\2=+\3\2\2\2=/\3\2\2\2=\62\3\2\2\2=8\3\2\2\2=<\3\2"+
 		"\2\2>\7\3\2\2\2?@\7\13\2\2@A\5\4\3\2AB\7\f\2\2B\t\3\2\2\2CD\b\6\1\2DE"+
-		"\7\23\2\2EN\7\33\2\2FN\7\33\2\2GN\7\35\2\2HN\7\30\2\2IJ\7\31\2\2JK\5\n"+
+		"\7\23\2\2EN\5\n\6\tFN\7\33\2\2GN\7\35\2\2HN\7\30\2\2IJ\7\31\2\2JK\5\n"+
 		"\6\2KL\7\32\2\2LN\3\2\2\2MC\3\2\2\2MF\3\2\2\2MG\3\2\2\2MH\3\2\2\2MI\3"+
 		"\2\2\2NW\3\2\2\2OP\f\b\2\2PQ\t\2\2\2QV\5\n\6\tRS\f\7\2\2ST\t\3\2\2TV\5"+
 		"\n\6\bUO\3\2\2\2UR\3\2\2\2VY\3\2\2\2WU\3\2\2\2WX\3\2\2\2X\13\3\2\2\2Y"+

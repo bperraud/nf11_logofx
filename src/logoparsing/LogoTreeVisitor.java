@@ -17,10 +17,11 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     private static int LOOP_MUST_BREAK = -1;
     private static int DIVISION_BY_ZERO = -2;
-    private static int UNEXPECTED_NEGATIVE_RESULT = -3;
+    private static int UNEXPECTED_NEGATIVE_VALUE = -3;
     private static int BAD_RGB_VALUE = -4;
     private static int VARIABLE_NOT_SET = -5;
     private static int UNKNOWN_BOOLEAN_OPERATOR = -6;
+    private static int UNEXPECTED_DOUBLE_VALUE = -7;
 
     private Traceur traceur;
     private ParseTreeProperty<Double> atts = new ParseTreeProperty<>();
@@ -47,10 +48,6 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     private double getAttValue(ParseTree node) {
         return atts.get(node);
     }
-
-    /* TODO : vérifier les Var dans les autres expressions de la grammaire notamment, dans le repete avec un entier forcé.
-    */
-
 
     @Override
     public Integer visitMul(MulContext ctx) {
@@ -122,7 +119,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         }
 
         if (result < 0.0) {
-            return UNEXPECTED_NEGATIVE_RESULT;
+            return UNEXPECTED_NEGATIVE_VALUE;
         }
 
         setAttValue(ctx, result);
@@ -140,7 +137,19 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     @Override
     public Integer visitRandom(RandomContext ctx) {
-        double random = ThreadLocalRandom.current().nextDouble(0, Double.valueOf(ctx.INT().getText()));
+        Integer code = visit(ctx.exp());
+
+        if (code != null && code < 0)
+            return code;
+
+        double borneSup = getAttValue(ctx.exp());
+
+        if (!(borneSup == Math.floor(borneSup)) || Double.isInfinite(borneSup)) {
+            return UNEXPECTED_DOUBLE_VALUE;
+        } else if (borneSup < 0)
+            return UNEXPECTED_NEGATIVE_VALUE;
+
+        double random = ThreadLocalRandom.current().nextDouble(0, borneSup);
         setAttValue(ctx, random);
         Log.appendnl("visitRandom " + random);
         return 0;
@@ -148,10 +157,18 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     @Override
     public Integer visitRepete(RepeteContext ctx) {
-        Integer code;
-        int nbiterations = Integer.valueOf(ctx.INT().getText());
+        Integer code = visit(ctx.exp());
 
-        for (int i = 0; i < nbiterations; i++) {
+        if (code != null && code < 0)
+            return code;
+
+        double nbIterations = getAttValue(ctx.exp());
+
+        if (!(nbIterations == Math.floor(nbIterations)) || Double.isInfinite(nbIterations)) {
+            return UNEXPECTED_DOUBLE_VALUE;
+        }
+
+        for (int i = 0; i < nbIterations; i++) {
             loopsStack.push(i + 1);
 
             if ((code = visit(ctx.bloc())) != null && code < 0)
