@@ -10,11 +10,11 @@ import static logoparsing.LogoParser.*;
 import static logoparsing.LogoTreeVisitor.INCORRECT_PARAMETERS_NUMBER;
 
 class Procedure {
-    private String                     name;
-    private List<String>               paramsNames;
-    private Liste_instructionsContext  instructions;
-    private Rend_instructionContext    retourInstruction;
-    private Stack<VariablesContextMap> contextStack;
+    private String                           name;
+    private List<String>                     paramsNames;
+    private Liste_instructionsContext        instructions;
+    private Rend_instructionContext          retourInstruction;
+    private Stack<VariablesContextMap>       contextStack;
 
     Procedure(
             String name,

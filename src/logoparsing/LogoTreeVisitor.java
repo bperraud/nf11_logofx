@@ -26,10 +26,13 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     private static int MISSING_RETURN_STATEMENT    = -9;
 
     private Traceur traceur;
-    private ParseTreeProperty<Double>  atts               = new ParseTreeProperty<>();
-    private Stack<Integer>             loopsStack         = new Stack<>();
-    private Map<String, Procedure>     declaredProcedures = new HashMap<>();
-    private Stack<VariablesContextMap> contextStack       = new Stack<>();
+    //    private ParseTreeProperty<Double>  atts               = new ParseTreeProperty<>();
+    private ParseTreeProperty<Map<Integer, Double>> atts               = new ParseTreeProperty<>();
+    private Stack<Integer>                          loopsStack         = new Stack<>();
+    private Map<String, Procedure>                  declaredProcedures = new HashMap<>();
+    private Stack<VariablesContextMap>              contextStack       = new Stack<>();
+
+    private int debugFuncStackDepth = 0;
 
     private int toInt(double a) {
         return (int) Math.round(a);
@@ -45,37 +48,57 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     }
 
     private void setAttValue(ParseTree node, double value) {
-        atts.put(node, value);
+        if (atts.get(node) == null) {
+            atts.put(node, new HashMap<>());
+        }
+        atts.get(node).put(debugFuncStackDepth, value);
+//        atts.put(node, value);
+        debugFuncStack("setAttValue, key: " + node.getText() + ", stackdepth:" + debugFuncStackDepth + ", value: " + value);
     }
 
     private double getAttValue(ParseTree node) {
-        return atts.get(node);
+//        return atts.get(node);
+        debugFuncStack("getAttValue, key: " + node.getText() + ", stackdepth" + debugFuncStackDepth);
+        Double res;
+        int    depth = debugFuncStackDepth;
+        while ((res = atts.get(node).get(depth)) == null) depth++;
+        return res;
+    }
+
+    private void debugFuncStack(String msg) {
+        StringBuilder indent = new StringBuilder();
+        for (int i = 0; i < debugFuncStackDepth; i++) {
+            indent.append(". . ");
+        }
+        System.out.println(indent + msg);
     }
 
     @Override
     public Integer visitMul(MulContext ctx) {
         Integer code;
+        debugFuncStack("VisitMul, stack: " + contextStack);
 
         for (ParseTree child : ctx.children) {
             code = visit(child);
-
             if (code != null && code < 0) return code;
         }
 
-        String op   = ctx.getChild(1).getText();
+        String op = ctx.getChild(1).getText();
+        debugFuncStack("Mul1->" + ctx.exp(0).getText());
+        debugFuncStack("Mul2->" + ctx.exp(1).getText());
         double num1 = getAttValue(ctx.exp(0));
         double num2 = getAttValue(ctx.exp(1));
         double result;
 
-        if (op.equals("*")) {
-            result = num1 * num2;
-        } else {
-            if (num2 == 0.0) {
-                return DIVISION_BY_ZERO;
-            } else {
-                result = num1 / num2;
-            }
-        }
+        debugFuncStack("Mul1 (" + ctx.exp(0).getText() + ") = " + num1);
+        debugFuncStack("Mul2 (" + ctx.exp(1).getText() + ") = " + num2);
+
+        if (op.equals("*")) result = num1 * num2;
+        else if (num2 == 0.0) return DIVISION_BY_ZERO;
+        else result = num1 / num2;
+
+        debugFuncStack("MulRes = " + result);
+
         setAttValue(ctx, result);
         Log.appendnl("visitMul");
         return 0;
@@ -288,17 +311,15 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     @Override
     public Integer visitDonne(DonneContext ctx) {
-        Integer code;
-
-        for (ParseTree child : ctx.children) {
-            code = visit(child);
-
-            if (code != null && code < 0) return code;
-        }
+        Integer code = visit(ctx.exp());
+        if (code != null && code < 0) return code;
 
         String varName = ctx.SETVAR().getText().substring(1);
         double value   = toInt(getAttValue(ctx.exp()));
+
         contextStack.peek().put(varName, value);
+        debugFuncStack("Put: " + "key=" + varName + ", value=" + value);
+        debugFuncStack("stack at put: " + contextStack);
         Log.appendnl("visitDonne");
         return 0;
     }
@@ -309,6 +330,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         if (!contextStack.peek().containsKey(varName)) return VARIABLE_NOT_SET;
         setAttValue(ctx, contextStack.peek().get(varName));
         Log.appendnl("visitGetvar");
+        debugFuncStack("visitGetvar (" + ctx.getParent().getText() + "), varName:" + varName + ", value: " + contextStack.peek().get(
+                varName) + ", stack: " + contextStack);
         return 0;
     }
 
@@ -500,12 +523,18 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         if (code != null && code < 0) return code;
 
         Procedure procedure = declaredProcedures.get(procName);
+        Log.appendnl("Visit proc: " + procName);
 
         code = procedure.prepare(paramsValues);
         if (code != null && code < 0) return code;
 
         if (procedure.hasInstructions()) {
             code = visit(procedure.getInstructions());
+            if (code != null && code < 0) return code;
+        }
+
+        if (procedure.hasRetourInstruction()) {
+            code = visit(procedure.getRetourInstruction());
             if (code != null && code < 0) return code;
         }
 
@@ -523,11 +552,17 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         if (code != null && code < 0) return code;
 
         Procedure procedure = declaredProcedures.get(procName);
+        Log.appendnl("Visit func: " + procName);
+        debugFuncStack("Visit func: " + procName);
+        debugFuncStack("Params: " + paramsValues);
 
         if (!procedure.hasRetourInstruction()) return MISSING_RETURN_STATEMENT;
 
         code = procedure.prepare(paramsValues);
         if (code != null && code < 0) return code;
+
+        debugFuncStack("ContextStack: " + contextStack);
+        debugFuncStackDepth++;
 
         if (procedure.hasInstructions()) {
             code = visit(procedure.getInstructions());
@@ -536,9 +571,22 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
         if ((code = visit(procedure.getRetourInstruction())) != null && code < 0) return code;
 
-        procedure.close();
+//        procedure.getValeurRetourStack().push(getAttValue(procedure.getRetourInstruction().exp()));
+        setAttValue(ctx, getAttValue(procedure.getRetourInstruction()));
 
-        setAttValue(ctx, getAttValue(procedure.getRetourInstruction().exp()));
+        procedure.close();
+        debugFuncStack("Pop, stack: " + contextStack);
+        debugFuncStackDepth--;
+
+        return 0;
+    }
+
+    @Override
+    public Integer visitRend_instruction(Rend_instructionContext ctx) {
+        Integer code = visit(ctx.exp());
+        if (code != null && code < 0) return code;
+        setAttValue(ctx, getAttValue(ctx.exp()));
+        debugFuncStack("setRendValue: " + getAttValue(ctx.exp()));
         return 0;
     }
 }
