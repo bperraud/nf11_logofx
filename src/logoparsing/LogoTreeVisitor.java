@@ -27,6 +27,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     private Traceur traceur;
     //    private ParseTreeProperty<Double>  atts               = new ParseTreeProperty<>();
+    // TODO: ask Moulin if it is the correct/clean way to do this... :(
     private ParseTreeProperty<Map<Integer, Double>> atts               = new ParseTreeProperty<>();
     private Stack<Integer>                          loopsStack         = new Stack<>();
     private Map<String, Procedure>                  declaredProcedures = new HashMap<>();
@@ -515,6 +516,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         return 0;
     }
 
+    // TODO: handle "rends" statement at any moment (like STOP for tantque)
     @Override
     public Integer visitProcedurecall(ProcedurecallContext ctx) {
         String       procName     = ctx.PROCNAME().getText();
