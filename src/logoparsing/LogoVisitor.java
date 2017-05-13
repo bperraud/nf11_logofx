@@ -1,4 +1,4 @@
-// Generated from /home/baptiste/IdeaProjects/nf11_logofx/grammar/Logo.g4 by ANTLR 4.6
+// Generated from C:/Users/Baptiste/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
 
   package logoparsing;
 
@@ -123,6 +123,13 @@ public interface LogoVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBreak(LogoParser.BreakContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code procedurecall}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProcedurecall(LogoParser.ProcedurecallContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LogoParser#bloc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -149,6 +156,13 @@ public interface LogoVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLoop(LogoParser.LoopContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code functioncall}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctioncall(LogoParser.FunctioncallContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code getvar}
 	 * labeled alternative in {@link LogoParser#exp}.
@@ -191,4 +205,22 @@ public interface LogoVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBooleanatom(LogoParser.BooleanatomContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LogoParser#def_procedures}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDef_procedures(LogoParser.Def_proceduresContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LogoParser#def_procedure}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDef_procedure(LogoParser.Def_procedureContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LogoParser#rend_instruction}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRend_instruction(LogoParser.Rend_instructionContext ctx);
 }

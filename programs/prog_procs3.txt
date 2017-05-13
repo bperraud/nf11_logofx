@@ -1,0 +1,9 @@
+pour doublesi :n
+    donne "t :n
+    si :n >= 100 [donne "t 2 * :n]
+    rends :t
+fin
+
+av doublesi(50)
+td 90
+av doublesi(100)

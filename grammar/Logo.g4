@@ -6,13 +6,16 @@ grammar Logo;
 
 INT : '0' | '1'..'9' ('0'..'9')* ;
 WS : [ \t\r\n]+ -> skip ;
-fragment VAR : [a-zA-Z][a-zA-Z0-9]*;
-GETVAR : ':'VAR;
-SETVAR : '"'VAR;
+fragment ID : [a-zA-Z][a-zA-Z0-9]*;
+GETVAR : ':'ID;
+SETVAR : '"'ID;
+PROCNAME : ID;
 OPERATOR : [<>]|[<>!=]'=' ;
 
-programme : liste_instructions 
+programme :
+    def_procedures liste_instructions
 ;
+
 liste_instructions :
   (instruction)+   
 ;
@@ -32,22 +35,36 @@ instruction :
   | 'si'        booleanexpression bloc bloc?    #si
   | 'tantque'   booleanexpression bloc          #tantque
   | 'STOP'                                      #break
+  | PROCNAME    exp*                            #procedurecall
 ;
 
 bloc : '[' liste_instructions ']'
 ;
 
 exp :
-    'hasard' exp        #random
-  | exp ('*' | '/') exp #mul
-  | exp ('+' | '-') exp #sum
-  | INT                 #int
-  | GETVAR              #getvar
-  | 'LOOP'              #loop
-  | '(' exp ')'         #parenthese
+    'hasard' exp            #random
+  | exp ('*' | '/') exp     #mul
+  | exp ('+' | '-') exp     #sum
+  | INT                     #int
+  | GETVAR                  #getvar
+  | 'LOOP'                  #loop
+  | '(' exp ')'             #parenthese
+  | PROCNAME '(' exp* ')'   #functioncall
 ;
 
 booleanexpression :
     exp OPERATOR exp    #booleancomposite
   | exp                 #booleanatom
+;
+
+def_procedures :
+    def_procedure*
+;
+
+def_procedure :
+    'pour' PROCNAME GETVAR* liste_instructions? rend_instruction? 'fin'
+;
+
+rend_instruction :
+    'rends' exp
 ;

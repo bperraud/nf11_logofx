@@ -1,0 +1,8 @@
+pour carre :c
+    rends :c * :c
+fin
+pour double :n
+    rends :n * 2
+fin
+
+av double (carre (10))

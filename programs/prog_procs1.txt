@@ -1,0 +1,7 @@
+pour tracecarre :n
+donne "cote :n / 2
+repete 4 [ av :cote td 90 ]
+fin
+tracecarre (100)
+donne "cote 200
+tracecarre (:cote)

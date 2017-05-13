@@ -1,4 +1,4 @@
-// Generated from /home/baptiste/IdeaProjects/nf11_logofx/grammar/Logo.g4 by ANTLR 4.6
+// Generated from C:/Users/Baptiste/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
 
   package logoparsing;
 
@@ -198,6 +198,18 @@ public interface LogoListener extends ParseTreeListener {
 	 */
 	void exitBreak(LogoParser.BreakContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code procedurecall}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void enterProcedurecall(LogoParser.ProcedurecallContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code procedurecall}
+	 * labeled alternative in {@link LogoParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void exitProcedurecall(LogoParser.ProcedurecallContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LogoParser#bloc}.
 	 * @param ctx the parse tree
 	 */
@@ -243,6 +255,18 @@ public interface LogoListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLoop(LogoParser.LoopContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code functioncall}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctioncall(LogoParser.FunctioncallContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code functioncall}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctioncall(LogoParser.FunctioncallContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code getvar}
 	 * labeled alternative in {@link LogoParser#exp}.
@@ -315,4 +339,34 @@ public interface LogoListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBooleanatom(LogoParser.BooleanatomContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LogoParser#def_procedures}.
+	 * @param ctx the parse tree
+	 */
+	void enterDef_procedures(LogoParser.Def_proceduresContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LogoParser#def_procedures}.
+	 * @param ctx the parse tree
+	 */
+	void exitDef_procedures(LogoParser.Def_proceduresContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LogoParser#def_procedure}.
+	 * @param ctx the parse tree
+	 */
+	void enterDef_procedure(LogoParser.Def_procedureContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LogoParser#def_procedure}.
+	 * @param ctx the parse tree
+	 */
+	void exitDef_procedure(LogoParser.Def_procedureContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LogoParser#rend_instruction}.
+	 * @param ctx the parse tree
+	 */
+	void enterRend_instruction(LogoParser.Rend_instructionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LogoParser#rend_instruction}.
+	 * @param ctx the parse tree
+	 */
+	void exitRend_instruction(LogoParser.Rend_instructionContext ctx);
 }
