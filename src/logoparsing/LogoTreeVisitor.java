@@ -27,11 +27,11 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     private Traceur traceur;
     //    private ParseTreeProperty<Double>  atts               = new ParseTreeProperty<>();
-    // TODO: ask Moulin if it is the correct/clean way to do this... :(
     private ParseTreeProperty<Map<Integer, Double>> atts               = new ParseTreeProperty<>();
     private Stack<Integer>                          loopsStack         = new Stack<>();
     private Map<String, Procedure>                  declaredProcedures = new HashMap<>();
     private Stack<VariablesContextMap>              contextStack       = new Stack<>();
+    private double rendValue;
 
     private int debugFuncStackDepth = 0;
 
@@ -495,11 +495,12 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
             paramsNames.add(paramNameNode.getText().substring(1));
         }
 
-        Procedure procedure = new Procedure(ctx.PROCNAME().getText(),
-                                            paramsNames,
-                                            ctx.liste_instructions(),
-                                            ctx.rend_instruction(),
-                                            contextStack
+        Procedure procedure = new Procedure(
+                ctx.PROCNAME().getText(),
+                paramsNames,
+                ctx.liste_instructions(),
+                ctx.rend_instruction(),
+                contextStack
         );
 
         declaredProcedures.put(ctx.PROCNAME().getText(), procedure);
@@ -574,7 +575,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         if ((code = visit(procedure.getRetourInstruction())) != null && code < 0) return code;
 
 //        procedure.getValeurRetourStack().push(getAttValue(procedure.getRetourInstruction().exp()));
-        setAttValue(ctx, getAttValue(procedure.getRetourInstruction()));
+//        setAttValue(ctx, getAttValue(procedure.getRetourInstruction()));
+        setAttValue(ctx, rendValue);
 
         procedure.close();
         debugFuncStack("Pop, stack: " + contextStack);
@@ -587,7 +589,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     public Integer visitRend_instruction(Rend_instructionContext ctx) {
         Integer code = visit(ctx.exp());
         if (code != null && code < 0) return code;
-        setAttValue(ctx, getAttValue(ctx.exp()));
+//        setAttValue(ctx, getAttValue(ctx.exp()));
+        rendValue = getAttValue(ctx.exp());
         debugFuncStack("setRendValue: " + getAttValue(ctx.exp()));
         return 0;
     }
