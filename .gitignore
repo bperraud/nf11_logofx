@@ -5,8 +5,6 @@
 
 # User-specific stuff:
 .idea/**/tasks.xml
-.idea/dictionaries
-
 # Sensitive or high-churn files:
 .idea/**/dataSources/
 .idea/**/dataSources.ids
@@ -103,3 +101,9 @@ logo-fx.iml
 nf11_logofx.iml
 target/
 .idea/
+/src/logoparsing/LogoParser.java
+/src/logoparsing/LogoBaseVisitor.java
+/src/logoparsing/LogoVisitor.java
+/src/logoparsing/LogoLexer.java
+/src/logoparsing/LogoBaseListener.java
+/src/logoparsing/LogoListener.java
