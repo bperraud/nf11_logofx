@@ -38,10 +38,10 @@ pour pattern1 :SIZE :LENGTH
 fin
 
 pour lattice :SIZE :LENGTH :DEPTH
-    lc fpos [450 450] tg 30 bc
+    lc fpos [300 450] tg 30 bc
     repete :DEPTH [
         pattern1 :SIZE :LENGTH
     ]
 fin
 
-lattice 30 8 5
+lattice 20 20 7

@@ -12,4 +12,5 @@ pour arbre :L :G
         ]
 fin
 
-arbre 50 8
+fpos [450 450]
+arbre 150 12

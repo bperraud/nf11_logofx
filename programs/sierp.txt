@@ -23,4 +23,5 @@ pour sierp :SIZE :LEVEL
     ]
 fin
 
-sierp 5 4
+fpos [200 450]
+sierp 7 5

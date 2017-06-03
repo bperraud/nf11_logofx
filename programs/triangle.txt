@@ -12,7 +12,7 @@ pour triangle :n :t
 fin
 
 lc
-fpos [350 350]
+fpos [250 450]
 bc
 td 30
-triangle 100 0
+triangle 500 0

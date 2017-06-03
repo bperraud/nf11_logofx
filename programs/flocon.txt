@@ -1,5 +1,5 @@
 pour Khor :L
-    si :L < 5
+    si :L < 2
         [av :L]
         [
             Khor :L/3 tg 60
@@ -9,7 +9,8 @@ pour Khor :L
         ]
 fin
 
+fpos [ 350 400]
 repete 3 [
-    Khor 180
+    Khor 360
     td 120
 ]

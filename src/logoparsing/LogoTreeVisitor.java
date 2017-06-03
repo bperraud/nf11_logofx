@@ -483,7 +483,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
                 return code;
             }
         }
-
+        Log.flush();
         return 0;
     }
 

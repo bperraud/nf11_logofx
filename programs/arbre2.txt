@@ -19,4 +19,5 @@ pour arbre :l :a :o :f1 :f2
 fin
 
 fcc 25 209 122
-arbre 15 15 8 1 2
+fpos [450 450]
+arbre 25 10 10 1 2
