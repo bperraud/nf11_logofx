@@ -3,6 +3,6 @@ pour fact :n
         [donne "t 1]
         [donne "t :n * fact(:n - 1)]
     rends :t
-    fin
+fin
 
 av fact(5)

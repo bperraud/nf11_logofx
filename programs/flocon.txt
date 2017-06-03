@@ -1,0 +1,15 @@
+pour Khor :L
+    si :L < 5
+        [av :L]
+        [
+            Khor :L/3 tg 60
+            Khor :L/3 td 120
+            Khor :L/3 tg 60
+            Khor :L/3
+        ]
+fin
+
+repete 3 [
+    Khor 180
+    td 120
+]

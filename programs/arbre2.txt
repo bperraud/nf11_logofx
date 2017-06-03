@@ -1,0 +1,22 @@
+pour arbre :l :a :o :f1 :f2
+    si :o == 0
+        [STOP]
+        [
+            tg :a
+            av :l
+            arbre :l*:f1 :a :o-1 :f1 :f2
+            lc
+            re :l
+            td 2*:a
+            bc
+            av :l * :f2
+            arbre :l * :f1 :a :o-1 :f1 :f2
+            lc
+            re :l * :f2
+            tg :a
+            bc
+        ]
+fin
+
+fcc 25 209 122
+arbre 15 15 8 1 2

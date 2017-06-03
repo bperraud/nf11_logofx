@@ -1,0 +1,18 @@
+pour triangle :n :t
+    si :n < 4 [STOP]
+    fcc hasard 255 hasard 255 hasard 255
+    repete 3 [av :n td 120]
+    donne "t :t + 1
+    triangle :n/2 :t
+    lc av :n /2 bc
+    triangle :n/2 :t
+    lc td 120 av :n /2 tg 120 bc
+    triangle :n/2 :t
+    lc td 240 av :n /2 td 120 bc
+fin
+
+lc
+fpos [350 350]
+bc
+td 30
+triangle 100 0

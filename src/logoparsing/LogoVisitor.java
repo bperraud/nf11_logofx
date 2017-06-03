@@ -1,4 +1,4 @@
-// Generated from C:/Users/bapti/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
+// Generated from C:/Users/Baptiste/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
 
   package logoparsing;
 
@@ -143,12 +143,26 @@ public interface LogoVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRandom(LogoParser.RandomContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code sqrt}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSqrt(LogoParser.SqrtContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code mul}
 	 * labeled alternative in {@link LogoParser#exp}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitMul(LogoParser.MulContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code double}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDouble(LogoParser.DoubleContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code loop}
 	 * labeled alternative in {@link LogoParser#exp}.

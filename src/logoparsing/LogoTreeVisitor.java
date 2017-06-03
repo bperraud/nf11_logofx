@@ -15,25 +15,27 @@ import static logoparsing.LogoParser.*;
 @SuppressWarnings("FieldCanBeLocal")
 public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
-    private static int LOOP_MUST_BREAK             = -1;
-    private static int DIVISION_BY_ZERO            = -2;
-    private static int UNEXPECTED_NEGATIVE_VALUE   = -3;
-    private static int BAD_RGB_VALUE               = -4;
-    private static int VARIABLE_NOT_SET            = -5;
-    private static int UNKNOWN_BOOLEAN_OPERATOR    = -6;
-    private static int UNEXPECTED_DOUBLE_VALUE     = -7;
-    static         int INCORRECT_PARAMETERS_NUMBER = -8;
-    private static int MISSING_RETURN_STATEMENT    = -9;
+    private static int BREAK_ACTIVE                  = -1;
+    private static int DIVISION_BY_ZERO              = -2;
+    private static int UNEXPECTED_NEGATIVE_VALUE     = -3;
+    private static int BAD_RGB_VALUE                 = -4;
+    private static int VARIABLE_NOT_SET              = -5;
+    private static int UNKNOWN_BOOLEAN_OPERATOR      = -6;
+    private static int UNEXPECTED_DOUBLE_VALUE       = -7;
+    static         int INCORRECT_PARAMETERS_NUMBER   = -8;
+    private static int MISSING_RETURN_STATEMENT      = -9;
+    private static int UNKNOWN_PROCEDURE_OR_FUNCTION = -10;
 
     private Traceur traceur;
-    //    private ParseTreeProperty<Double>  atts               = new ParseTreeProperty<>();
-    private ParseTreeProperty<Map<Integer, Double>> atts               = new ParseTreeProperty<>();
-    private Stack<Integer>                          loopsStack         = new Stack<>();
-    private Map<String, Procedure>                  declaredProcedures = new HashMap<>();
-    private Stack<VariablesContextMap>              contextStack       = new Stack<>();
+    private ParseTreeProperty<Double>  atts               = new ParseTreeProperty<>();
+    //    private ParseTreeProperty<Map<Integer, Double>> atts               = new ParseTreeProperty<>();
+    private Stack<Integer>             loopsStack         = new Stack<>();
+    private Map<String, Procedure>     declaredProcedures = new HashMap<>();
+    private Stack<VariablesContextMap> contextStack       = new Stack<>();
     private double rendValue;
 
-    private int debugFuncStackDepth = 0;
+    private boolean debug               = false;
+    private int     debugFuncStackDepth = 0;
 
     private int toInt(double a) {
         return (int) Math.round(a);
@@ -49,24 +51,31 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     }
 
     private void setAttValue(ParseTree node, double value) {
-        if (atts.get(node) == null) {
-            atts.put(node, new HashMap<>());
-        }
-        atts.get(node).put(debugFuncStackDepth, value);
-//        atts.put(node, value);
+//        if (atts.get(node) == null) {
+//            atts.put(node, new HashMap<>());
+//        }
+//        atts.get(node).put(debugFuncStackDepth, value);
+        atts.put(node, value);
         debugFuncStack("setAttValue, key: " + node.getText() + ", stackdepth:" + debugFuncStackDepth + ", value: " + value);
     }
 
     private double getAttValue(ParseTree node) {
-//        return atts.get(node);
-        debugFuncStack("getAttValue, key: " + node.getText() + ", stackdepth" + debugFuncStackDepth);
-        Double res;
-        int    depth = debugFuncStackDepth;
-        while ((res = atts.get(node).get(depth)) == null) depth++;
-        return res;
+//        debugFuncStack("getAttValue, key: " + node.getText() + ", stackdepth" + debugFuncStackDepth);
+//        Double res;
+//        int    depth = debugFuncStackDepth;
+//        while ((res = atts.get(node).get(depth)) == null) depth++;
+//        return res;
+
+        // Prendre en priorité la valeur de la variable dans contextStack
+        if (node.getClass().getSimpleName().equals("GetvarContext"))
+            return contextStack.peek().get(node.getText().substring(1));
+
+        return atts.get(node);
     }
 
     private void debugFuncStack(String msg) {
+        if (!debug)
+            return;
         StringBuilder indent = new StringBuilder();
         for (int i = 0; i < debugFuncStackDepth; i++) {
             indent.append(". . ");
@@ -88,6 +97,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         debugFuncStack("Mul1->" + ctx.exp(0).getText());
         debugFuncStack("Mul2->" + ctx.exp(1).getText());
         double num1 = getAttValue(ctx.exp(0));
+//        if (ctx.exp(0).getClass().getSimpleName().equals("GetvarContext"))
+//            num1 = contextStack.peek().get(ctx.exp(0).getText().substring(1));
         double num2 = getAttValue(ctx.exp(1));
         double result;
 
@@ -155,7 +166,15 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     public Integer visitInt(IntContext ctx) {
         String intText = ctx.INT().getText();
         setAttValue(ctx, Integer.valueOf(intText));
-        Log.appendnl("visitInt");
+        Log.appendnl("visitInt : " + getAttValue(ctx));
+        return 0;
+    }
+
+    @Override
+    public Integer visitDouble(DoubleContext ctx) {
+        String doubleText = ctx.DOUBLE().getText();
+        setAttValue(ctx, Double.valueOf(doubleText));
+        Log.appendnl("visitDouble");
         return 0;
     }
 
@@ -174,6 +193,22 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         double random = ThreadLocalRandom.current().nextDouble(0, borneSup);
         setAttValue(ctx, random);
         Log.appendnl("visitRandom " + random);
+        return 0;
+    }
+
+    @Override
+    public Integer visitSqrt(SqrtContext ctx) {
+        Integer code = visit(ctx.exp());
+
+        if (code != null && code < 0) return code;
+
+        double number = getAttValue(ctx.exp());
+        if (number < 0)
+            return UNEXPECTED_NEGATIVE_VALUE;
+
+        double sqrt = Math.sqrt(number);
+        setAttValue(ctx, sqrt);
+        Log.appendnl("visitSqrt " + sqrt);
         return 0;
     }
 
@@ -424,7 +459,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
             if (code != null) {
                 if (code < 0) return code;
-                else if (code == LOOP_MUST_BREAK) {
+                else if (code == BREAK_ACTIVE) {
                     Log.appendnl("STOP");
                     return 0;
                 }
@@ -442,7 +477,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     @Override
     public Integer visitBreak(BreakContext ctx) {
         Log.appendnl("visitBreak");
-        return LOOP_MUST_BREAK;
+        return BREAK_ACTIVE;
     }
 
     @Override
@@ -526,14 +561,28 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         if (code != null && code < 0) return code;
 
         Procedure procedure = declaredProcedures.get(procName);
-        Log.appendnl("Visit proc: " + procName);
+        if (procedure == null)
+            return UNKNOWN_PROCEDURE_OR_FUNCTION;
+
+        Log.appendnl("Visit func: " + procName);
+        debugFuncStack("Visit func: " + procName);
+        debugFuncStack("Params: " + paramsValues);
 
         code = procedure.prepare(paramsValues);
         if (code != null && code < 0) return code;
 
+        debugFuncStack("ContextStack: " + contextStack);
+        debugFuncStackDepth++;
+
         if (procedure.hasInstructions()) {
             code = visit(procedure.getInstructions());
-            if (code != null && code < 0) return code;
+            if (code != null && code < 0) {
+                if (code == BREAK_ACTIVE) {
+                    procedure.close();
+                    return 0;
+                }
+                return code;
+            }
         }
 
         if (procedure.hasRetourInstruction()) {
@@ -542,6 +591,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         }
 
         procedure.close();
+        debugFuncStack("Pop, stack: " + contextStack);
+        debugFuncStackDepth--;
 
         return 0;
     }
@@ -555,6 +606,9 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         if (code != null && code < 0) return code;
 
         Procedure procedure = declaredProcedures.get(procName);
+        if (procedure == null)
+            return UNKNOWN_PROCEDURE_OR_FUNCTION;
+
         Log.appendnl("Visit func: " + procName);
         debugFuncStack("Visit func: " + procName);
         debugFuncStack("Params: " + paramsValues);
@@ -569,7 +623,13 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
         if (procedure.hasInstructions()) {
             code = visit(procedure.getInstructions());
-            if (code != null && code < 0) return code;
+            if (code != null && code < 0) {
+                if (code == BREAK_ACTIVE) {
+                    procedure.close();
+                    return 0;
+                }
+                return code;
+            }
         }
 
         if ((code = visit(procedure.getRetourInstruction())) != null && code < 0) return code;

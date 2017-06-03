@@ -1,4 +1,4 @@
-// Generated from C:/Users/bapti/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
+// Generated from C:/Users/Baptiste/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
 
   package logoparsing;
 
@@ -232,6 +232,18 @@ public interface LogoListener extends ParseTreeListener {
 	 */
 	void exitRandom(LogoParser.RandomContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code sqrt}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterSqrt(LogoParser.SqrtContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code sqrt}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitSqrt(LogoParser.SqrtContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code mul}
 	 * labeled alternative in {@link LogoParser#exp}.
 	 * @param ctx the parse tree
@@ -243,6 +255,18 @@ public interface LogoListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMul(LogoParser.MulContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code double}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterDouble(LogoParser.DoubleContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code double}
+	 * labeled alternative in {@link LogoParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitDouble(LogoParser.DoubleContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code loop}
 	 * labeled alternative in {@link LogoParser#exp}.

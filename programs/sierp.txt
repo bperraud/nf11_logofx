@@ -1,0 +1,26 @@
+pour corner :SIZE
+    td 45
+    av :SIZE
+    td 45
+fin
+
+pour one_side :SIZE :DIAG :LEVEL
+    si :LEVEL == 0 [ STOP ]
+    one_side :SIZE :DIAG :LEVEL - 1
+    td 45 av :DIAG td 45
+    one_side :SIZE :DIAG :LEVEL - 1
+    tg 90 av :SIZE tg 90
+    one_side :SIZE :DIAG :LEVEL - 1
+    td 45 av :DIAG td 45
+    one_side :SIZE :DIAG :LEVEL - 1
+fin
+
+pour sierp :SIZE :LEVEL
+    donne "DIAG :SIZE / sqrt 2
+    repete 4 [
+        one_side :SIZE :DIAG :LEVEL
+        corner :DIAG
+    ]
+fin
+
+sierp 5 4

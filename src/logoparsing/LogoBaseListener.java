@@ -1,4 +1,4 @@
-// Generated from C:/Users/bapti/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
+// Generated from C:/Users/Baptiste/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
 
   package logoparsing;
 
@@ -246,6 +246,18 @@ public class LogoBaseListener implements LogoListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSqrt(LogoParser.SqrtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSqrt(LogoParser.SqrtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMul(LogoParser.MulContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -253,6 +265,18 @@ public class LogoBaseListener implements LogoListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMul(LogoParser.MulContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDouble(LogoParser.DoubleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDouble(LogoParser.DoubleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

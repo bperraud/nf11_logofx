@@ -4,9 +4,10 @@ grammar Logo;
   package logoparsing;
 }
 
-INT : '0' | '1'..'9' ('0'..'9')* ;
+INT : '0' | '-'? '1'..'9' '0'..'9'* ;
+DOUBLE : '-'? '0'..'9'+ '.' '0'..'9'+ ;
 WS : [ \t\r\n]+ -> skip ;
-fragment ID : [a-zA-Z][a-zA-Z0-9]*;
+fragment ID : [a-zA-Z][a-zA-Z0-9_]*;
 GETVAR : ':'ID;
 SETVAR : '"'ID;
 PROCNAME : ID;
@@ -43,9 +44,11 @@ bloc : '[' liste_instructions ']'
 
 exp :
     'hasard' exp            #random
+  | 'sqrt'   exp            #sqrt
   | exp ('*' | '/') exp     #mul
   | exp ('+' | '-') exp     #sum
   | INT                     #int
+  | DOUBLE                  #double
   | GETVAR                  #getvar
   | 'LOOP'                  #loop
   | '(' exp ')'             #parenthese

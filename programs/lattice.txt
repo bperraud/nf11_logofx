@@ -1,0 +1,47 @@
+pour skip :SIZE
+    lc av :SIZE * 1.5 bc
+fin
+
+pour parallel :SIZE
+    repete 2 [
+        av :SIZE td 120 av :SIZE / 2
+        td 60
+    ]
+fin
+
+pour tri :SIZE
+    repete 3 [
+        parallel :SIZE td 120
+    ]
+fin
+
+pour return :SIZE :LENGTH
+    repete :LENGTH [
+        tri :SIZE tg 60 skip
+        :SIZE td 60
+    ]
+    tri :SIZE
+fin
+
+pour along :SIZE :LENGTH
+    repete :LENGTH [
+        tri :SIZE td 120 skip
+        :SIZE tg 120
+    ]
+    tri :SIZE
+fin
+
+pour pattern1 :SIZE :LENGTH
+    along :SIZE :LENGTH
+    skip :SIZE return :SIZE :LENGTH
+    skip :SIZE
+fin
+
+pour lattice :SIZE :LENGTH :DEPTH
+    lc fpos [450 450] tg 30 bc
+    repete :DEPTH [
+        pattern1 :SIZE :LENGTH
+    ]
+fin
+
+lattice 30 8 5

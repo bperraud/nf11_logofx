@@ -1,0 +1,15 @@
+pour arbre :L :G
+    si :G == 0
+        [ STOP ]
+        [
+            av :L
+            td 45
+            arbre :L/1.5 :G-1
+            tg 90
+            arbre :L/1.5 :G-1
+            td 45
+            re :L
+        ]
+fin
+
+arbre 50 8
