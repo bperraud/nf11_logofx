@@ -28,11 +28,9 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     private Traceur traceur;
     private ParseTreeProperty<Double>  atts               = new ParseTreeProperty<>();
-    //    private ParseTreeProperty<Map<Integer, Double>> atts               = new ParseTreeProperty<>();
     private Stack<Integer>             loopsStack         = new Stack<>();
     private Map<String, Procedure>     declaredProcedures = new HashMap<>();
     private Stack<VariablesContextMap> contextStack       = new Stack<>();
-    private double rendValue;
 
     private boolean debug               = false;
     private int     debugFuncStackDepth = 0;
@@ -51,25 +49,11 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     }
 
     private void setAttValue(ParseTree node, double value) {
-//        if (atts.get(node) == null) {
-//            atts.put(node, new HashMap<>());
-//        }
-//        atts.get(node).put(debugFuncStackDepth, value);
         atts.put(node, value);
         debugFuncStack("setAttValue, key: " + node.getText() + ", stackdepth:" + debugFuncStackDepth + ", value: " + value);
     }
 
     private double getAttValue(ParseTree node) {
-//        debugFuncStack("getAttValue, key: " + node.getText() + ", stackdepth" + debugFuncStackDepth);
-//        Double res;
-//        int    depth = debugFuncStackDepth;
-//        while ((res = atts.get(node).get(depth)) == null) depth++;
-//        return res;
-
-        // Prendre en priorité la valeur de la variable dans contextStack
-        if (node.getClass().getSimpleName().equals("GetvarContext"))
-            return contextStack.peek().get(node.getText().substring(1));
-
         return atts.get(node);
     }
 
@@ -83,31 +67,38 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         System.out.println(indent + msg);
     }
 
+    private Integer visitExpNodesSequential(List<ExpContext> exp, double[] res) {
+        Integer code;
+        for (int i = 0, expSize = exp.size(); i < expSize; i++) {
+            ExpContext expContext = exp.get(i);
+            code = visit(expContext);
+            if (code != null && code < 0) return code;
+            res[i] = getAttValue(exp.get(i));
+        }
+        return 0;
+    }
+
     @Override
     public Integer visitMul(MulContext ctx) {
         Integer code;
         debugFuncStack("VisitMul, stack: " + contextStack);
+        double[] operands = new double[2];
 
-        for (ParseTree child : ctx.children) {
-            code = visit(child);
-            if (code != null && code < 0) return code;
-        }
+        List<ExpContext> exp = ctx.exp();
+        code = visitExpNodesSequential(exp, operands);
+        if (code != null && code < 0) return code;
 
         String op = ctx.getChild(1).getText();
         debugFuncStack("Mul1->" + ctx.exp(0).getText());
         debugFuncStack("Mul2->" + ctx.exp(1).getText());
-        double num1 = getAttValue(ctx.exp(0));
-//        if (ctx.exp(0).getClass().getSimpleName().equals("GetvarContext"))
-//            num1 = contextStack.peek().get(ctx.exp(0).getText().substring(1));
-        double num2 = getAttValue(ctx.exp(1));
         double result;
 
-        debugFuncStack("Mul1 (" + ctx.exp(0).getText() + ") = " + num1);
-        debugFuncStack("Mul2 (" + ctx.exp(1).getText() + ") = " + num2);
+        debugFuncStack("Mul1 (" + ctx.exp(0).getText() + ") = " + operands[0]);
+        debugFuncStack("Mul2 (" + ctx.exp(1).getText() + ") = " + operands[1]);
 
-        if (op.equals("*")) result = num1 * num2;
-        else if (num2 == 0.0) return DIVISION_BY_ZERO;
-        else result = num1 / num2;
+        if (op.equals("*")) result = operands[0] * operands[1];
+        else if (operands[1] == 0.0) return DIVISION_BY_ZERO;
+        else result = operands[0] / operands[1];
 
         debugFuncStack("MulRes = " + result);
 
@@ -118,13 +109,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     @Override
     public Integer visitParenthese(ParentheseContext ctx) {
-        Integer code;
-
-        for (ParseTree child : ctx.children) {
-            code = visit(child);
-
-            if (code != null && code < 0) return code;
-        }
+        Integer code = visit(ctx.exp());
+        if (code != null && code < 0) return code;
 
         setAttValue(ctx, getAttValue(ctx.exp()));
         Log.appendnl("visitParenthese");
@@ -134,28 +120,22 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     @Override
     public Integer visitSum(SumContext ctx) {
-        Integer code;
+        Integer  code;
+        double[] operands = new double[2];
 
-        for (ParseTree child : ctx.children) {
-            code = visit(child);
+        List<ExpContext> exp = ctx.exp();
+        code = visitExpNodesSequential(exp, operands);
+        if (code != null && code < 0) return code;
 
-            if (code != null && code < 0) return code;
-        }
-
-        String op   = ctx.getChild(1).getText();
-        double num1 = getAttValue(ctx.exp(0));
-        double num2 = getAttValue(ctx.exp(1));
+        String op = ctx.getChild(1).getText();
         double result;
 
-        if (op.equals("+")) {
-            result = num1 + num2;
-        } else {
-            result = num1 - num2;
-        }
+        if (op.equals("+"))
+            result = operands[0] + operands[1];
+        else
+            result = operands[0] - operands[1];
 
-        if (result < 0.0) {
-            return UNEXPECTED_NEGATIVE_VALUE;
-        }
+        if (result < 0.0) return UNEXPECTED_NEGATIVE_VALUE;
 
         setAttValue(ctx, result);
         Log.appendnl("visitSum");
@@ -226,7 +206,6 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
         for (int i = 0; i < nbIterations; i++) {
             loopsStack.push(i + 1);
-
             if ((code = visit(ctx.bloc())) != null && code < 0) return code;
         }
 
@@ -309,32 +288,30 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     @Override
     public Integer visitFpos(FposContext ctx) {
-        Integer code;
+        Integer  code;
+        double[] pos = new double[2];
 
-        for (ParseTree child : ctx.children) {
-            code = visit(child);
+        List<ExpContext> exp = ctx.exp();
+        code = visitExpNodesSequential(exp, pos);
+        if (code != null && code < 0) return code;
 
-            if (code != null && code < 0) return code;
-        }
-
-        traceur.fpos(getAttValue(ctx.exp(0)), getAttValue(ctx.exp(1)));
+        traceur.fpos(pos[0], pos[1]);
         Log.appendnl("visitFpos");
         return 0;
     }
 
     @Override
     public Integer visitFcc(FccContext ctx) {
-        Integer code;
+        Integer  code;
+        double[] colors = new double[3];
 
-        for (ParseTree child : ctx.children) {
-            code = visit(child);
+        List<ExpContext> exp = ctx.exp();
+        code = visitExpNodesSequential(exp, colors);
+        if (code != null && code < 0) return code;
 
-            if (code != null && code < 0) return code;
-        }
-
-        int r = toInt(getAttValue(ctx.exp(0)));
-        int g = toInt(getAttValue(ctx.exp(1)));
-        int b = toInt(getAttValue(ctx.exp(2)));
+        int r = toInt(colors[0]);
+        int g = toInt(colors[1]);
+        int b = toInt(colors[2]);
 
         if (!(0 <= r && r <= 255 && 0 <= g && g <= 255 && 0 <= b && b <= 255)) {
             return BAD_RGB_VALUE;
@@ -373,36 +350,33 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
     @Override
     public Integer visitBooleancomposite(BooleancompositeContext ctx) {
-        Integer code;
+        Integer  code;
+        double[] operands = new double[2];
 
-        for (ParseTree child : ctx.children) {
-            code = visit(child);
-
-            if (code != null && code < 0) return code;
-        }
+        List<ExpContext> exp = ctx.exp();
+        code = visitExpNodesSequential(exp, operands);
+        if (code != null && code < 0) return code;
 
         String operator = ctx.OPERATOR().getText();
-        double operand1 = getAttValue(ctx.exp(0));
-        double operand2 = getAttValue(ctx.exp(1));
 
         switch (operator) {
             case "==":
-                setAttValue(ctx, operand1 == operand2 ? 1 : 0);
+                setAttValue(ctx, operands[0] == operands[1] ? 1 : 0);
                 break;
             case ">":
-                setAttValue(ctx, operand1 > operand2 ? 1 : 0);
+                setAttValue(ctx, operands[0] > operands[1] ? 1 : 0);
                 break;
             case ">=":
-                setAttValue(ctx, operand1 >= operand2 ? 1 : 0);
+                setAttValue(ctx, operands[0] >= operands[1] ? 1 : 0);
                 break;
             case "<":
-                setAttValue(ctx, operand1 < operand2 ? 1 : 0);
+                setAttValue(ctx, operands[0] < operands[1] ? 1 : 0);
                 break;
             case "<=":
-                setAttValue(ctx, operand1 <= operand2 ? 1 : 0);
+                setAttValue(ctx, operands[0] <= operands[1] ? 1 : 0);
                 break;
             case "!=":
-                setAttValue(ctx, operand1 != operand2 ? 1 : 0);
+                setAttValue(ctx, operands[0] != operands[1] ? 1 : 0);
                 break;
             default:
                 return UNKNOWN_BOOLEAN_OPERATOR;
@@ -414,15 +388,8 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     @Override
     public Integer visitBooleanatom(BooleanatomContext ctx) {
         Integer code = visit(ctx.exp());
-
         if (code != null && code < 0) return 0;
-
-        double value = getAttValue(ctx.exp());
-        if (value == 0.0) {
-            setAttValue(ctx, 0);
-        } else {
-            setAttValue(ctx, 1);
-        }
+        setAttValue(ctx, getAttValue(ctx.exp()) == 0.0 ? 0 : 1);
         Log.appendnl("visitBooleanatom");
         return 0;
     }
@@ -435,14 +402,12 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
         double testResult = getAttValue(ctx.booleanexpression());
 
-        Log.appendnl("visitSi");
-
-        if (testResult != 0.0) {
+        if (testResult != 0.0)
             return visit(ctx.bloc(0));
-        } else if (ctx.bloc().size() == 2) {
+        else if (ctx.bloc().size() == 2)
             return visit(ctx.bloc(1));
-        }
 
+        Log.appendnl("visitSi");
         return 0;
     }
 
@@ -602,7 +567,6 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
         String       procName     = ctx.PROCNAME().getText();
         List<Double> paramsValues = new LinkedList<>();
         Integer      code         = visitParamsValues(ctx.exp(), paramsValues);
-
         if (code != null && code < 0) return code;
 
         Procedure procedure = declaredProcedures.get(procName);
@@ -634,9 +598,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
 
         if ((code = visit(procedure.getRetourInstruction())) != null && code < 0) return code;
 
-//        procedure.getValeurRetourStack().push(getAttValue(procedure.getRetourInstruction().exp()));
-//        setAttValue(ctx, getAttValue(procedure.getRetourInstruction()));
-        setAttValue(ctx, rendValue);
+        setAttValue(ctx, getAttValue(procedure.getRetourInstruction()));
 
         procedure.close();
         debugFuncStack("Pop, stack: " + contextStack);
@@ -649,8 +611,7 @@ public class LogoTreeVisitor extends LogoBaseVisitor<Integer> {
     public Integer visitRend_instruction(Rend_instructionContext ctx) {
         Integer code = visit(ctx.exp());
         if (code != null && code < 0) return code;
-//        setAttValue(ctx, getAttValue(ctx.exp()));
-        rendValue = getAttValue(ctx.exp());
+        setAttValue(ctx, getAttValue(ctx.exp()));
         debugFuncStack("setRendValue: " + getAttValue(ctx.exp()));
         return 0;
     }

@@ -4,7 +4,7 @@ grammar Logo;
   package logoparsing;
 }
 
-INT : '0' | '-'? '1'..'9' '0'..'9'* ;
+INT : '0' | '1'..'9' '0'..'9'* ;
 DOUBLE : '-'? '0'..'9'+ '.' '0'..'9'+ ;
 WS : [ \t\r\n]+ -> skip ;
 fragment ID : [a-zA-Z][a-zA-Z0-9_]*;
