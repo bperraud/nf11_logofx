@@ -1,4 +1,4 @@
-// Generated from C:/Users/Baptiste/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
+// Generated from C:/Users/bapti/IdeaProjects/nf11_logofx/grammar\Logo.g4 by ANTLR 4.6
 
   package logoparsing;
 
@@ -23,7 +23,7 @@ public class LogoParser extends Parser {
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, INT=29, DOUBLE=30, WS=31, GETVAR=32, 
-		SETVAR=33, PROCNAME=34, OPERATOR=35;
+		SETVAR=33, PROCNAME=34, OPERATOR=35, LineComment=36;
 	public static final int
 		RULE_programme = 0, RULE_liste_instructions = 1, RULE_instruction = 2, 
 		RULE_bloc = 3, RULE_exp = 4, RULE_booleanexpression = 5, RULE_def_procedures = 6, 
@@ -43,7 +43,7 @@ public class LogoParser extends Parser {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, "INT", "DOUBLE", "WS", "GETVAR", "SETVAR", 
-		"PROCNAME", "OPERATOR"
+		"PROCNAME", "OPERATOR", "LineComment"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -1472,7 +1472,7 @@ public class LogoParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3%\u0095\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3&\u0095\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2"+
 		"\3\2\3\3\6\3\31\n\3\r\3\16\3\32\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3"+
 		"\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4"+

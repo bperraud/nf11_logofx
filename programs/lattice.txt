@@ -4,6 +4,7 @@ fin
 
 pour parallel :SIZE
     repete 2 [
+        fcc hasard 255 hasard 255 hasard 255
         av :SIZE td 120 av :SIZE / 2
         td 60
     ]
@@ -11,12 +12,14 @@ fin
 
 pour tri :SIZE
     repete 3 [
+        fcc hasard 255 hasard 255 hasard 255
         parallel :SIZE td 120
     ]
 fin
 
 pour return :SIZE :LENGTH
     repete :LENGTH [
+        fcc hasard 255 hasard 255 hasard 255
         tri :SIZE tg 60 skip
         :SIZE td 60
     ]
@@ -25,6 +28,7 @@ fin
 
 pour along :SIZE :LENGTH
     repete :LENGTH [
+        fcc hasard 255 hasard 255 hasard 255
         tri :SIZE td 120 skip
         :SIZE tg 120
     ]
@@ -40,6 +44,7 @@ fin
 pour lattice :SIZE :LENGTH :DEPTH
     lc fpos [300 450] tg 30 bc
     repete :DEPTH [
+        fcc hasard 255 hasard 255 hasard 255
         pattern1 :SIZE :LENGTH
     ]
 fin

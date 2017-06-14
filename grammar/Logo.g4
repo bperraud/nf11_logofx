@@ -12,6 +12,7 @@ GETVAR : ':'ID;
 SETVAR : '"'ID;
 PROCNAME : ID;
 OPERATOR : [<>]|[<>!=]'=' ;
+LineComment : '//' ~[\r\n]* -> skip ;
 
 programme :
     def_procedures liste_instructions

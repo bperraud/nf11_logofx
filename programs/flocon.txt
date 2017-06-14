@@ -1,4 +1,5 @@
 pour Khor :L
+    fcc hasard 255 hasard 255 hasard 255
     si :L < 2
         [av :L]
         [

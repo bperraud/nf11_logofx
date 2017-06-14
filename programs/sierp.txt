@@ -1,10 +1,12 @@
 pour corner :SIZE
+    fcc hasard 255 hasard 255 hasard 255
     td 45
     av :SIZE
     td 45
 fin
 
 pour one_side :SIZE :DIAG :LEVEL
+    fcc hasard 255 hasard 255 hasard 255
     si :LEVEL == 0 [ STOP ]
     one_side :SIZE :DIAG :LEVEL - 1
     td 45 av :DIAG td 45

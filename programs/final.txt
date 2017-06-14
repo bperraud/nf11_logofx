@@ -1,0 +1,141 @@
+//------------------------------------------------------
+//COULEURS
+//------------------------------------------------------
+
+// 0   255 0     //VERT
+// 0   255 64
+// 0   255 127   //VERT D'EAU
+// 0   255 192
+// 0   255 255   //BLEU CLAIR
+// 0   192 255
+// 0   127 255   //BLEU ROI
+// 0   64  255
+// 0   0   255   //BLEU
+// 64  0   255
+// 127 0   255   //VIOLET
+// 192 0   255
+// 255 0   255   //ROSE PALE
+// 255 0   192
+// 255 0   127   //ROSE
+// 255 0   64
+// 255 0   0     //ROUGE
+// 255 64  0
+// 255 127 0     //ORANGE
+// 255 192 0
+// 255 255 0     //JAUNE
+// 192 255 0
+// 127 255 0     //VERT CITRON
+// 64  255 0
+
+//------------------------------------------------------
+//FONCTIONS
+//------------------------------------------------------
+
+pour getred :r
+    si :r == 1  [ donne "a 0]
+    si :r == 2  [ donne "a 0]
+    si :r == 3  [ donne "a 0]
+    si :r == 4  [ donne "a 0]
+    si :r == 5  [ donne "a 0]
+    si :r == 6  [ donne "a 0]
+    si :r == 7  [ donne "a 0]
+    si :r == 8  [ donne "a 0]
+    si :r == 9  [ donne "a 0]
+    si :r == 10 [ donne "a 64]
+    si :r == 11 [ donne "a 127]
+    si :r == 12 [ donne "a 192]
+    si :r == 13 [ donne "a 255]
+    si :r == 14 [ donne "a 255]
+    si :r == 15 [ donne "a 255]
+    si :r == 16 [ donne "a 255]
+    si :r == 17 [ donne "a 255]
+    si :r == 18 [ donne "a 255]
+    si :r == 19 [ donne "a 255]
+    si :r == 20 [ donne "a 255]
+    si :r == 21 [ donne "a 255]
+    si :r == 22 [ donne "a 192]
+    si :r == 23 [ donne "a 127]
+    si :r == 24 [ donne "a 64]
+  rends :a
+fin
+
+pour getgreen :g
+  si :g == 1  [ donne "d 255]
+  si :g == 2  [ donne "d 255]
+  si :g == 3  [ donne "d 255]
+  si :g == 4  [ donne "d 255]
+  si :g == 5  [ donne "d 255]
+  si :g == 6  [ donne "d 192]
+  si :g == 7  [ donne "d 127]
+  si :g == 8  [ donne "d 64]
+  si :g == 9  [ donne "d 0]
+  si :g == 10 [ donne "d 0]
+  si :g == 11 [ donne "d 0]
+  si :g == 12 [ donne "d 0]
+  si :g == 13 [ donne "d 0]
+  si :g == 14 [ donne "d 0]
+  si :g == 15 [ donne "d 0]
+  si :g == 16 [ donne "d 0]
+  si :g == 17 [ donne "d 0]
+  si :g == 18 [ donne "d 64]
+  si :g == 19 [ donne "d 127]
+  si :g == 20 [ donne "d 192]
+  si :g == 21 [ donne "d 255]
+  si :g == 22 [ donne "d 255]
+  si :g == 23 [ donne "d 255]
+  si :g == 24 [ donne "d 255]
+  rends :d
+fin
+
+pour getblue :b
+  si :b == 1  [ donne "c 0]
+  si :b == 2  [ donne "c 64]
+  si :b == 3  [ donne "c 127]
+  si :b == 4  [ donne "c 192]
+  si :b == 5  [ donne "c 255]
+  si :b == 6  [ donne "c 255]
+  si :b == 7  [ donne "c 255]
+  si :b == 8  [ donne "c 255]
+  si :b == 9  [ donne "c 255]
+  si :b == 10 [ donne "c 255]
+  si :b == 11 [ donne "c 255]
+  si :b == 12 [ donne "c 255]
+  si :b == 13 [ donne "c 255]
+  si :b == 14 [ donne "c 192]
+  si :b == 15 [ donne "c 127]
+  si :b == 16 [ donne "c 64]
+  si :b == 17 [ donne "c 0]
+  si :b == 18 [ donne "c 0]
+  si :b == 19 [ donne "c 0]
+  si :b == 20 [ donne "c 0]
+  si :b == 21 [ donne "c 0]
+  si :b == 22 [ donne "c 0]
+  si :b == 23 [ donne "c 0]
+  si :b == 24 [ donne "c 0]
+  rends :c
+fin
+
+pour arbre :L :G
+    si :G == 0
+        [ STOP ]
+        [
+            av :L
+            td 45
+            arbre :L/1.5 :G-1
+            tg 90
+            arbre :L/1.5 :G-1
+            td 45
+            re :L
+        ]
+fin
+
+
+fpos [450 250]
+donne "i 1
+repete 24
+[
+  fcc getred(:i) getgreen(:i) getblue(:i)
+  arbre 80 3
+  td 15
+  donne "i (:i+1)
+]

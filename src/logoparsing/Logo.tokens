@@ -33,6 +33,7 @@ GETVAR=32
 SETVAR=33
 PROCNAME=34
 OPERATOR=35
+LineComment=36
 'av'=1
 'td'=2
 'tg'=3

@@ -107,3 +107,5 @@ target/
 /src/logoparsing/LogoLexer.java
 /src/logoparsing/LogoBaseListener.java
 /src/logoparsing/LogoListener.java
+/src/logoparsing/LogoLexer.tokens
+/src/logoparsing/Logo.tokens

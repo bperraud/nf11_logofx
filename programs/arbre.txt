@@ -2,6 +2,7 @@ pour arbre :L :G
     si :G == 0
         [ STOP ]
         [
+            fcc hasard 255 hasard 255 hasard 255
             av :L
             td 45
             arbre :L/1.5 :G-1
